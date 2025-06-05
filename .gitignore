@@ -1,0 +1,64 @@
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+
+### Maven ###
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.jar
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### Logs ###
+*.log
+logs/
+**/logs/
+spring.log
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Eclipse ###
+*.launch
+.settings/
+.project
+.classpath
+
+### Swagger ###
+/**/swagger-ui.html
+**/swagger-resources
+**/webjars/
+
+### VSCode ###
+.vscode/
+
+### Node (if frontend exists) ###
+node_modules/
+dist/
+
+### Docker ###
+*.env
+.env
+docker-compose.override.yml
+
+### Misc ###
+*.tmp
+*.bak
+*.swp
+*~
