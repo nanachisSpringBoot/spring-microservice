@@ -5,6 +5,7 @@ import com.example.authservice.dto.response.LoginResponse;
 import com.example.authservice.entity.User;
 import com.example.authservice.repository.UserRepository;
 import com.example.authservice.service.JwtService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "Authorization")
 public class SecureController {
     @Autowired
     private UserRepository userRepository;
