@@ -1,4 +1,4 @@
-package com.example.userservice.controller;
+package com.example.userservice.rabbitMQ.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

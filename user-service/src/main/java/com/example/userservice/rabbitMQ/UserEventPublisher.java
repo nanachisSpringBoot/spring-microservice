@@ -1,7 +1,7 @@
-package com.example.userservice.service;
+package com.example.userservice.rabbitMQ;
 
 import com.example.userservice.config.RabbitMQConfig;
-import com.example.userservice.controller.User;
+import com.example.userservice.rabbitMQ.dto.User;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
