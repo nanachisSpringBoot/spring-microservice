@@ -1,17 +1,27 @@
+# -------- Stage 1: Build with Maven --------
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
-# Use a modern JDK 21 base image
+# Set working directory
+WORKDIR /build
+
+# Copy pom.xml and download dependencies first
+COPY ./ ./
+RUN mvn dependency:go-offline
+
+# Copy the entire source code
+COPY src ./src
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+# -------- Stage 2: Run with OpenJDK --------
 FROM openjdk:21-jdk
-
-EXPOSE 8082
-
-# Optional: allow the JAR file to be passed as a build argument
-ARG JAR_FILE=target/*.jar
 
 # Set working directory
 WORKDIR /app
 
-# Copy the built JAR into the container
-COPY ${JAR_FILE} app.jar
+# Copy the jar from the builder stage
+COPY --from=builder /build/target/*.jar app.jar
 
-# Default command to run the JAR
+# Run the application with the dev profile
 CMD ["java", "-jar", "app.jar", "--spring.profiles.active=dev"]
