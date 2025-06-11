@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   rabbitmq:
@@ -11,8 +11,108 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     networks:
-      - rabbitmq-network
+      - backend
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: my_local
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: micro-service-test
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend
+
+  discovery-service:
+    image: discovery-service
+    container_name: discovery-service
+    build:
+      context: ./discovery-service
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8761:8761"  # Optional: Expose Eureka UI externally
+    restart: unless-stopped
+
+  api-gateway:
+    image: api-gateway
+    container_name: api-gateway
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    ports:
+      - "8080:8080"  # Optional: Expose Eureka UI externally
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+
+  product-service:
+    image: product-service
+    container_name: product-service
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+
+  user-service:
+    image: user-service
+    container_name: user-service
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+
+  auth-service:
+    image: auth-service
+    container_name: auth-service
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    networks:
+      - backend
+    depends_on:
+      - discovery-service
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+    driver: local
+  pgadmin-data:
 
 networks:
-  rabbitmq-network:
+  backend:
     driver: bridge
+
