@@ -1,29 +1,14 @@
-# -------- Stage 1: Build with Maven --------
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
-
-# Set working directory
+# Stage 1: Build
+FROM maven:3.9-eclipse-temurin-21 AS builder
 WORKDIR /build
-
-# Copy pom.xml and download dependencies first
-COPY ./ ./
-RUN mvn dependency:go-offline
-
-# Copy the entire source code
-COPY src ./src
-
-# Package the application
+COPY . .
 RUN mvn clean package -DskipTests
 
-# -------- Stage 2: Run with OpenJDK --------
+# Stage 2: Runtime
 FROM openjdk:21-jdk
 
 EXPOSE 8761
 
-# Set working directory
 WORKDIR /app
-
-# Copy the jar from the builder stage
 COPY --from=builder /build/target/*.jar app.jar
-
-# Run the application with the dev profile
 CMD ["java", "-jar", "app.jar", "--spring.profiles.active=dev"]
